@@ -51,8 +51,7 @@ Examples:
   cat keyfile | BIP38_PASS=secret bip38tool encrypt batch
   
   The keyfile is a list of private keys one per line in hex or base58 format. 
-  If you set --ask-pass in batch mode the first line should be the passphrase.
-  
+
   BIP38_PASS=secret bip38tool decrypt 6PRQ7ivF6rFMn1wc7z6w1ZfFsKh4EAY1mhF3gCYkw8PLRMwfZNVqeqmW3F
   
 Using OpenSSL for key generation:
