@@ -7,9 +7,9 @@ This tool generates bitcoin addresses and encrypts them using the BIP38 process.
 Requires
 --------
 
-Go 1.2
-Git
-Mecruial (needed to to checkout go crypto libraries)
+- Go 1.2
+- Git
+- Mecruial (needed to to checkout go crypto libraries)
 
 
 Build Instructions
