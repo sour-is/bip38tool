@@ -15,7 +15,7 @@ Requires
 Build Instructions
 ------------------
 
-1. checkout source into $GOROOT/src
+1. checkout source into your $GOROOT/src/ directory and change directory into it.
 2. run go get to download dependancies.
 3. run go build
 
