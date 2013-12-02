@@ -114,6 +114,12 @@ func init() {
 
 		arguments["<passphrase>"] = value
 	}
+
+	// Batch mode defaults to CSV
+	if arguments["batch"] == true && arguments["--detail"] == false {
+		arguments["--csv"] = true
+	}
+
 }
 
 func main() {
@@ -128,11 +134,6 @@ func main() {
 		in, out = encrypter(pass)
 	} else if arguments["decrypt"] == true {
 		in, out = decrypter(pass)
-	}
-
-	// Batch mode defaults to CSV
-	if arguments["batch"] == true && arguments["--detail"] == false {
-		arguments["--csv"] = true
 	}
 
 	if arguments["--csv"] == true {
