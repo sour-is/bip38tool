@@ -105,8 +105,6 @@ func init() {
 
 		arguments["<passphrase>"] = value
 	}
-
-	log.Println(arguments)
 }
 
 func main() {
