@@ -17,7 +17,7 @@ var APP_USAGE string = `BIP38 Encryption Tool
 Copyright (c) 2013, Jon Lundy <jon@xuu.cc> 1NvmHfSjPq1UB9scXFhYDLkihnu9nkQ8xg
 
 Usage:
-  bip38tool encrypt [-c]  batch
+  bip38tool encrypt [-d]  batch
   bip38tool encrypt [-cp] new [--count=N]
   bip38tool encrypt [-cp] <privatekey>
   
@@ -36,6 +36,7 @@ Decrypt Modes:
 Options:
   --count=N      Number of new keys to generate [default: 1].
   -c,--csv       Output in CSV format.
+  -d,--detail    Output in Detail format.
   -p,--ask-pass  Ask for the passphrase instead of using environment variable.
   -h             Usage Help
 
@@ -49,7 +50,8 @@ Examples:
   
   cat keyfile | BIP38_PASS=secret bip38tool encrypt batch
   
-  The keyfile is a list of private keys one per line in hex or base58 format.
+  The keyfile is a list of private keys one per line in hex or base58 format. 
+  If you set --ask-pass in batch mode the first line should be the passphrase.
   
   BIP38_PASS=secret bip38tool decrypt 6PRQ7ivF6rFMn1wc7z6w1ZfFsKh4EAY1mhF3gCYkw8PLRMwfZNVqeqmW3F
   
@@ -81,7 +83,14 @@ func init() {
 		log.Fatal(err)
 	}
 
-	if arguments["batch"] == false && arguments["--ask-pass"] == true {
+	// Batch mode does not work with password prompt.
+	// Docopt causes it to fall through as a <privatekey>
+	if arguments["<privatekey>"] == "batch" {
+		arguments["--ask-pass"] = false
+		arguments["batch"] = true
+	}
+
+	if arguments["--ask-pass"] == true {
 		value, err := gopass.GetPass("Enter Passphrase:")
 		if err != nil {
 			log.Fatal(err)
@@ -121,7 +130,12 @@ func main() {
 		in, out = decrypter(pass)
 	}
 
-	if arguments["--csv"] == true || arguments["batch"] == true {
+	// Batch mode defaults to CSV
+	if arguments["batch"] == true && arguments["--detail"] == false {
+		arguments["--csv"] = true
+	}
+
+	if arguments["--csv"] == true {
 		done = writerCSV(out)
 	} else {
 		done = writerDetail(out)
