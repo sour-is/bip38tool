@@ -192,7 +192,7 @@ func encrypter(pass string) (in chan string, out chan *Message) {
 				msg.Priv, _ = address.NewPrivateKey(nil)
 			} else {
 				var err error
-				msg.Priv, _, err = address.ReadPrivateKey(i)
+				msg.Priv, err = address.ReadPrivateKey(i)
 				if err != nil {
 					log.Println(err)
 					continue
@@ -246,7 +246,7 @@ func writerCSV(in chan *Message) (out chan int) {
 		fmt.Println("Public Key,BIP38 Key")
 
 		for i := range in {
-			fmt.Printf("%s,%s\n", i.Priv.PublicKey(), i.Bip38)
+			fmt.Printf("%s,%s\n", i.Priv.PublicKey, i.Bip38)
 		}
 
 		out <- 1
@@ -264,7 +264,7 @@ func writerDetail(in chan *Message) (out chan int) {
 		for i := range in {
 			fmt.Println("---")
 			fmt.Printf("Address:    %s\n", i.Priv.Address())
-			fmt.Printf("PublicHex:  %x\n", i.Priv.PublicKey().Bytes())
+			fmt.Printf("PublicHex:  %x\n", i.Priv.PublicKey.Bytes())
 			fmt.Printf("Private:    %s\n", i.Priv)
 			fmt.Printf("PrivateHex: %x\n", i.Priv.Bytes())
 			fmt.Printf("Bip38:      %s\n", i.Bip38)
