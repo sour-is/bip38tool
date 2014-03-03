@@ -1,5 +1,3 @@
-# CURRENTLY BROKEN! DO NOT USE WITH REAL FUNDS!
-
 bip38tool
 =========
 
