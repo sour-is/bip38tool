@@ -6,6 +6,7 @@ import (
 	"github.com/docopt/docopt.go"
 	"github.com/sour-is/bip38tool/gopass"
 	"github.com/sour-is/bitcoin/address"
+	"github.com/sour-is/bitcoin/bip38"
 	"log"
 	"os"
 	"strconv"
@@ -69,8 +70,9 @@ Using OpenSSL for key generation:
 var arguments map[string]interface{}
 
 type Message struct {
-	Priv  *address.PrivateKey
-	Bip38 *address.BIP38Key
+	Priv   *address.PrivateKey
+	Bip38  string
+	BipHex []byte
 }
 
 // Initialize application state.
@@ -199,7 +201,7 @@ func encrypter(pass string) (in chan string, out chan *Message) {
 				}
 			}
 
-			msg.Bip38 = address.BIP38Encrypt(msg.Priv, pass)
+			msg.Bip38 = bip38.Encrypt(msg.Priv, pass)
 			out <- msg
 		}
 		close(out)
@@ -218,18 +220,13 @@ func decrypter(pass string) (in chan string, out chan *Message) {
 			var err error
 			msg := new(Message)
 
-			msg.Bip38, err = address.BIP38LoadString(i)
+			msg.Bip38 = i
+			msg.BipHex = address.FromBase58Raw(i)
+			msg.Priv, err = bip38.Decrypt(i, pass)
 			if err != nil {
 				log.Println(err)
 				continue
 			}
-
-			msg.Priv, err = msg.Bip38.BIP38Decrypt(pass)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-
 			out <- msg
 		}
 		close(out)
@@ -246,7 +243,7 @@ func writerCSV(in chan *Message) (out chan int) {
 		fmt.Println("Public Key,BIP38 Key")
 
 		for i := range in {
-			fmt.Printf("%s,%s\n", i.Priv.PublicKey, i.Bip38)
+			fmt.Printf("%s,%s\n", i.Priv.Address(), i.Bip38)
 		}
 
 		out <- 1
@@ -268,7 +265,7 @@ func writerDetail(in chan *Message) (out chan int) {
 			fmt.Printf("Private:    %s\n", i.Priv)
 			fmt.Printf("PrivateHex: %x\n", i.Priv.Bytes())
 			fmt.Printf("Bip38:      %s\n", i.Bip38)
-			fmt.Printf("Bip38Hex:   %x\n", i.Bip38.Bytes())
+			fmt.Printf("BipHex:     %x\n", i.BipHex)
 			fmt.Println("...")
 		}
 
