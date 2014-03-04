@@ -10,7 +10,7 @@ Requires
 - Go 1.2
 - Git
 - Mecruial (needed to to checkout go crypto libraries)
-- GoConvey for Testing
+- GoConvey for Testing ![Build Status](https://travis-ci.org/smartystreets/goconvey.png)
 - Sour-is/bitcoin [![Build Status](https://travis-ci.org/sour-is/bitcoin.png?branch=master)](https://travis-ci.org/sour-is/bitcoin)
 - Sour-is/koblitz [![Build Status](https://travis-ci.org/sour-is/koblitz.png?branch=master)](https://travis-ci.org/sour-is/koblitz) 
 
